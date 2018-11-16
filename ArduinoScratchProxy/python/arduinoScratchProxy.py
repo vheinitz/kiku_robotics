@@ -14,6 +14,7 @@ while True:
         lines = open("%s/arduinoscratchproxy.cfg"% home,'r').readlines()
         cfg={}
         for l in lines:
+            l = l.strip()
             if l.find('=') != -1:
                 parts = l.split('=')
                 cfg[parts[0]] = parts[1]
@@ -44,7 +45,8 @@ while True:
             exit(1)
         port = int(data)
         cfg = open("%s/arduinoscratchproxy.cfg" % home, 'w')
-        cfg.write("ArduinoPort=%d" % port)
+        cfg.write("ArduinoPort=%d\n" % port)
+        cfg.write("debug=%d\n" % debug)
         cfg.close()
 
 if not ser:
@@ -102,7 +104,7 @@ try:
                     Output[k] = v
 
                 elif k.find('M') == 0:
-                    n= int(k.split('M')[1])
+                    n= int(k.split('M')[1])d
                     ser.write('m%d %s'%(n,v))
 
 
