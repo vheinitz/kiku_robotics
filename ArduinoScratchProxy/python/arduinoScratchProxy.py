@@ -24,7 +24,7 @@ while True:
             pass
 
         port = '\\\\.\\COM%s' % (cfg['ArduinoPort'])
-        ser = serial.Serial(port)
+        ser = serial.Serial(port, baudrate=38400)
         time.sleep(3)
         ser.write('#')  # Identify
         time.sleep(1)
@@ -59,7 +59,7 @@ try:
     Output = {}
 
     while True:
-        time.sleep(0.1)
+        time.sleep(0.2)
         ser.write('g')  #g - read all inputs
         time.sleep(0.1)
         msg = ser.read_all()
@@ -73,7 +73,7 @@ try:
 
             scrmsg = {}
             for a in range(0, len(sensor_data['AI'])):
-                scrmsg['A%d'%(a+1)] = sensor_data['AI'][a]
+                scrmsg['AI%d'%(a+1)] = sensor_data['AI'][a]
                 #break
 
             for a in range(0, len(sensor_data['DI'])):
@@ -82,7 +82,7 @@ try:
                 scrmsg['DI%d'%(a+2)] = sensor_data['DI'][a]
                 #break
 
-            s.sensorupddate(scrmsg)
+            s.sensorupdate(scrmsg)
             if debug:
                 print ("SensorData: |%s|" % scrmsg)
 
@@ -104,7 +104,7 @@ try:
                     Output[k] = v
 
                 elif k.find('M') == 0:
-                    n= int(k.split('M')[1])d
+                    n= int(k.split('M')[1])
                     ser.write('m%d %s'%(n,v))
 
 

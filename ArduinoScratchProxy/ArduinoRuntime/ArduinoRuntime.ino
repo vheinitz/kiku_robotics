@@ -36,7 +36,7 @@ byte bv=0;
 
 
 void setup() {
-  Serial.begin(9600);        
+  Serial.begin(38400);        
   for (int p=2; p <=13; p++)
     pinMode(p, INPUT_PULLUP);
 }
