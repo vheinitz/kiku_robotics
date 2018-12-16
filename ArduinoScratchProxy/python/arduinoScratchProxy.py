@@ -5,6 +5,7 @@ import time
 import json
 import ast
 import sys
+import serial.tools.list_ports
 
 debug = 0
 home = './'  # expanduser("~")
@@ -33,12 +34,19 @@ while True:
             print ("Found on port: %s" % port)
             break
         else:
+            print ("KiKu Board not found on port: %s" % port)
             ser.close()
             ser = None
+            raw_input("Try again (y) or break (n)? ")
+            if data == 'n':
+                break
 
 
 
     except Exception, ex:
+        for p in serial.tools.list_ports.comports():
+            print p
+
         data = raw_input("Enter Arduino Port or 'q' to quit: ")
         if data == 'q':
             print ("Quit")

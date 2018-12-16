@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['arduinoScratchProxy.py'],
-             pathex=['C:\\Development\\ArduinoScratchProxy\\python'],
+             pathex=['C:\\Development\\kiku_robotics\\ArduinoScratchProxy\\python'],
              binaries=[],
              datas=[],
              hiddenimports=[],
