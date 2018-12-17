@@ -12,6 +12,7 @@ class KiKuBoard:
         self.ser = None
         self.sensor_data={}
         self.outputs = {}
+        self.isConnected = False
 
     def connect(self, port):
 
@@ -21,16 +22,22 @@ class KiKuBoard:
         time.sleep(1)
         msg = self.ser.read_all()
         if msg.find('ASP Ver') != -1:
-            print ("Found on port: %s" % port)
+            self.isConnected = True
             return True
         else:
            return False
 
     def close(self):
-
-        self.ser.close()
+        try:
+            self.ser.close()
+        except:
+            pass
         time.sleep(1)
-        self.ser=None
+        self.ser = None
+        self.isConnected = False
+
+    def connected(self):
+        return self.isConnected
 
     def version(self):
         self.ser.write('#')  # Identify
@@ -43,35 +50,41 @@ class KiKuBoard:
 
     def set(self, num):
         if num not in self.outputs:
-            ser.write('co%d' % n)
-            time.sleep(0.3)
-        self.ser.write('s%d' % n)
+            self.ser.write('co%d' % num)
+            time.sleep(1)
+        self.ser.write('s%d' % num)
         self.outputs[num] = 1
 
     def reset(self, num):
         if num not in self.outputs:
-            ser.write('co%d' % n)
-            time.sleep(0.3)
-        self.ser.write('r%d' % n)
+            self.ser.write('co%d' % num)
+            time.sleep(1)
+        self.ser.write('r%d' % num)
         self.outputs[num] = 0
 
     def motor(self, num, val):
-        ser.write('m%d %s' % (num, val))
+        self.ser.write('m%d %s' % (num, val))
 
-    def poll(self):
+    def poll(self, t ):
         try:
             self.ser.write('g')  # g - read all inputs
-            time.sleep(1)
+            time.sleep(t)
             msg = self.ser.read_all()
             self.sensor_data = ast.literal_eval(str(msg))
         except:
             pass
 
     def getDI(self, num):
-        return self.sensor_data['DI'][num-2]
+        return self.sensor_data['DI'][num]
+
+    def DICnt(self):
+        return len(self.sensor_data['DI'])
 
     def getAI(self, num):
-        return self.sensor_data['AI'][num-1]
+        return self.sensor_data['AI'][num]
+
+    def AICnt(self):
+        return len(self.sensor_data['AI'])
 
 if __name__ == '__main__':
     kb = KiKuBoard()

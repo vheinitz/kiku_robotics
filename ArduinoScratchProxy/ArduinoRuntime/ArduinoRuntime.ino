@@ -109,7 +109,7 @@ void loop()
       else if (cmd == 'g')
       {
     		Serial.print("{ \"DI\":[");
-        for (int i=2; i<=13; i++)
+        for (int i=0; i<=13; i++)
     		{
     				Serial.print(digitalRead(i));
     				Serial.print(",");
@@ -117,7 +117,7 @@ void loop()
   		  Serial.print("], ");
   		
     		Serial.print(" \"AI\":[");
-        for (int i=0; i<5; i++)
+        for (int i=0; i<=7; i++)
     		{
     			Serial.print(map(analogRead(i),0,1024,0,100));
     			Serial.print(",");
