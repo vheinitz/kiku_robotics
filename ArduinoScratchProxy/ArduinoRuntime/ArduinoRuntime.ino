@@ -198,13 +198,13 @@ void loop()
       //Stepper Motor
       else if (cmd == 't')     
       {
-        Serial.print("Stepper ");
+        //Serial.print("Stepper ");
         int n = Serial.parseInt();  //stepper id
-        Serial.print(n);
-        Serial.print(';');
+        //Serial.print(n);
+        //Serial.print(';');
         int s = Serial.parseInt();  //steps
-        Serial.print(s);
-        Serial.print('\n');
+        //Serial.print(s);
+        //Serial.print('\n');
   
         stepper_do(n,s);
       }
@@ -224,7 +224,7 @@ void stepper_do(int num, int steps)
   int i2 = 3;
   int i3 = 4;
   int i4 = 5;
-  int T = 4400;
+  int T = 1200;
   
   if(num == 1)
   {

@@ -65,7 +65,10 @@ class KiKuBoard:
     def motor(self, num, val):
         self.ser.write('m%d %s' % (num, val))
 
-    def poll(self, t ):
+    def stepper(self, num, steps):
+        self.ser.write('t%d %s' % (num, steps))
+
+    def poll(self, t=1):
         try:
             self.ser.write('g')  # g - read all inputs
             time.sleep(t)
@@ -88,8 +91,10 @@ class KiKuBoard:
 
 if __name__ == '__main__':
     kb = KiKuBoard()
-    kb.connect("COM3")
+    kb.connect("COM6")
     print kb.version()
+    kb.stepper(1,200)
+    time.sleep(3)
     kb.poll()
     for i in range(2,10):
         print kb.getDI(i)
