@@ -27,6 +27,8 @@ e4 SErver Motor on Pin 13
 
 #include <Servo.h>
 
+void stepper_do(int num, int steps);
+
 int ServoPinOffset = 10;
 Servo SEM[4];
 bool AciveDI[13] = {0};
@@ -49,86 +51,86 @@ void loop()
   while (1)
   {
     if (Serial.available() > 0) 
-    {
-      
+    {      
       cmd = Serial.read();
       //Serial.print(cmd);
-  	  if (cmd == ' ') 
-  	    continue;
+      if (cmd == ' ' || cmd == 13 || cmd == 10) 
+       continue;
+          
       else if (cmd == '#') 
       {
         Serial.print("ASP Ver: 0.1.0"); 
       }
-  	  else if (cmd == 'c')
+      else if (cmd == 'c')
       {
         delay(20);
         //Serial.print("Config ");
         
-    		cmd = Serial.read();
+            cmd = Serial.read();
         //Serial.print(cmd);
 
-    		if (cmd == 'i')       //set as digital input with pullup
-    		{
-    			n = Serial.parseInt();  //number
+            if (cmd == 'i')       //set as digital input with pullup
+            {
+                n = Serial.parseInt();  //number
           //Serial.print(n);
           //Serial.print(" as DIn Pullup\n");
-    			pinMode(n, INPUT_PULLUP);
-    			AciveDI[n-1]=1;
-    		}
-    		else if (cmd == 'I')       //set as digital input
-    		{
-    			n = Serial.parseInt();  //number
+                pinMode(n, INPUT_PULLUP);
+                AciveDI[n-1]=1;
+            }
+            else if (cmd == 'I')       //set as digital input
+            {
+                n = Serial.parseInt();  //number
           //Serial.print(n);
           //Serial.print(" as DIn\n");
-    			pinMode(n, INPUT);
-    			AciveDI[n-1]=1;
-    		}
-    		else if (cmd == 'a')       //set as analog input
-    		{
+                pinMode(n, INPUT);
+                AciveDI[n-1]=1;
+            }
+            else if (cmd == 'a')       //set as analog input
+            {
           n = Serial.parseInt();  //number
           //Serial.print(n);
           //Serial.print(" as AIn\n");
-    			AciveAI[n]=1;
-    		}
-    		else if (cmd == 'o')       //set as output
-    		{
-    			n = Serial.parseInt();  //number
+                AciveAI[n]=1;
+            }
+            else if (cmd == 'o')       //set as output
+            {
+                n = Serial.parseInt();  //number
           //Serial.print(n);
           //Serial.print(" as Out\n");
-    			pinMode(n, OUTPUT);
-    		}
-    		else if (cmd == 'e')       //servo
-    		{
-    			n = Serial.parseInt();  //number
+                pinMode(n, OUTPUT);
+            }
+            else if (cmd == 'e')       //servo
+            {
+                n = Serial.parseInt();  //number
           //Serial.print(n);
           //Serial.print(" as Servo\n");
-    			int idx = n-1;
-    			SEM[idx].attach(ServoPinOffset+idx);
-    		}
+                int idx = n-1;
+                SEM[idx].attach(ServoPinOffset+idx);
+            }
       }
       else if (cmd == 'g')
       {
-    		Serial.print("{ \"DI\":[");
+        Serial.print("{ \"DI\":[");
         for (int i=0; i<=13; i++)
-    		{
-    				Serial.print(digitalRead(i));
-    				Serial.print(",");
-  		  }
-  		  Serial.print("], ");
-  		
-    		Serial.print(" \"AI\":[");
+        {
+            Serial.print(digitalRead(i));
+            Serial.print(",");
+        }
+        Serial.print("], ");
+          
+        Serial.print(" \"AI\":[");
         for (int i=0; i<=7; i++)
-    		{
-    			Serial.print(map(analogRead(i),0,1024,0,100));
-    			Serial.print(",");
-    		}
-    		Serial.print("]}\n");
+            {
+                Serial.print(map(analogRead(i),0,1024,0,100));
+                Serial.print(",");
+            }
+            Serial.print("]}\n");
       }
       else if (cmd == 's')       //set
       {
         //Serial.print("Set ");
         n = Serial.parseInt();  //number
-		    //byte v = Serial.parseInt();  //value
+            //byte v = Serial.parseInt();  //value
         digitalWrite(n, 1);
         //Serial.print(n);
         //Serial.print('\n');
@@ -143,7 +145,7 @@ void loop()
         //Serial.print('\n');
       }
       //Motor via L293
-      else if (cmd == 'm')       //set
+      else if (cmd == 'm')       //motor
       {
         //Serial.print("Motor ");
         n = Serial.parseInt();  //number
@@ -193,6 +195,19 @@ void loop()
           }
         }
       }
+      //Stepper Motor
+      else if (cmd == 't')     
+      {
+        Serial.print("Stepper ");
+        int n = Serial.parseInt();  //stepper id
+        Serial.print(n);
+        Serial.print(';');
+        int s = Serial.parseInt();  //steps
+        Serial.print(s);
+        Serial.print('\n');
+  
+        stepper_do(n,s);
+      }
       else 
       {
        Serial.print("No Command:");
@@ -200,4 +215,94 @@ void loop()
       }
     }
   }
+}
+
+void stepper_do(int num, int steps)
+{
+  
+  int i1 = 2;
+  int i2 = 3;
+  int i3 = 4;
+  int i4 = 5;
+  int T = 4400;
+  
+  if(num == 1)
+  {
+    i1=2; i2=3; i3=4; i4=5;  
+    if ( steps < 0 )
+    {
+       i1=5;i2=4;i3=3;i4=2; 
+    }
+  }
+  else if(num == 2)
+  {
+    i1=6;i2=7;i3=8;i4=9;
+    if ( steps < 0 )
+    {
+       i1=9; i2=8; i3=7; i4=6;  
+    }
+  }
+  else if(num == 3)
+  {
+    i1=10;i2=11;i3=12;i4=13;
+    if ( steps < 0 )
+    {
+       i1=13; i2=12; i3=11; i4=10;  
+    }
+  }
+
+  pinMode(i1, OUTPUT);
+  pinMode(i2, OUTPUT);
+  pinMode(i3, OUTPUT);
+  pinMode(i4, OUTPUT);
+
+  for ( int i=0; i < abs(steps); i++ )
+  {
+    digitalWrite(i1, LOW); 
+    digitalWrite(i2, LOW); 
+    digitalWrite(i3, LOW); 
+    digitalWrite(i4, LOW);
+    delayMicroseconds(T);
+    digitalWrite(i1, LOW); 
+    digitalWrite(i2, LOW); 
+    digitalWrite(i3, LOW); 
+    digitalWrite(i4, HIGH);
+    delayMicroseconds(T);
+    digitalWrite(i1, LOW); 
+    digitalWrite(i2, LOW); 
+    digitalWrite(i3, HIGH); 
+    digitalWrite(i4, HIGH);
+    delayMicroseconds(T);
+    digitalWrite(i1, LOW); 
+    digitalWrite(i2, LOW); 
+    digitalWrite(i3, HIGH); 
+    digitalWrite(i4, LOW);
+    delayMicroseconds(T);
+    digitalWrite(i1, LOW); 
+    digitalWrite(i2, HIGH); 
+    digitalWrite(i3, HIGH); 
+    digitalWrite(i4, LOW);
+    delayMicroseconds(T);
+    digitalWrite(i1, LOW); 
+    digitalWrite(i2, HIGH); 
+    digitalWrite(i3, LOW); 
+    digitalWrite(i4, LOW);
+    delayMicroseconds(T);
+    digitalWrite(i1, HIGH); 
+    digitalWrite(i2, HIGH); 
+    digitalWrite(i3, LOW); 
+    digitalWrite(i4, LOW);
+    delayMicroseconds(T);
+    digitalWrite(i1, HIGH); 
+    digitalWrite(i2, LOW); 
+    digitalWrite(i3, LOW); 
+    digitalWrite(i4, LOW);
+    delayMicroseconds(T);
+    digitalWrite(i1, LOW); 
+    digitalWrite(i2, LOW); 
+    digitalWrite(i3, LOW); 
+    digitalWrite(i4, LOW);
+    
+  }
+
 }
