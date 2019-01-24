@@ -224,19 +224,19 @@ void stepper_do(int num, int steps)
   int i2 = 3;
   int i3 = 4;
   int i4 = 5;
-  int T = 1200;
+  int T = 1600;
   
   if(num == 1)
   {
     i1=2; i2=3; i3=4; i4=5;  
     if ( steps < 0 )
     {
-       i1=5;i2=4;i3=3;i4=2; 
+       i1=5; i2=4; i3=3; i4=2; 
     }
   }
   else if(num == 2)
   {
-    i1=6;i2=7;i3=8;i4=9;
+    i1=6; i2=7; i3=8; i4=9;
     if ( steps < 0 )
     {
        i1=9; i2=8; i3=7; i4=6;  
@@ -244,7 +244,7 @@ void stepper_do(int num, int steps)
   }
   else if(num == 3)
   {
-    i1=10;i2=11;i3=12;i4=13;
+    i1=10; i2=11; i3=12; i4=13;
     if ( steps < 0 )
     {
        i1=13; i2=12; i3=11; i4=10;  
@@ -255,7 +255,9 @@ void stepper_do(int num, int steps)
   pinMode(i2, OUTPUT);
   pinMode(i3, OUTPUT);
   pinMode(i4, OUTPUT);
-
+  
+  delayMicroseconds(100000);
+  
   for ( int i=0; i < abs(steps); i++ )
   {
     digitalWrite(i1, LOW); 
@@ -298,11 +300,9 @@ void stepper_do(int num, int steps)
     digitalWrite(i3, LOW); 
     digitalWrite(i4, LOW);
     delayMicroseconds(T);
-    digitalWrite(i1, LOW); 
-    digitalWrite(i2, LOW); 
-    digitalWrite(i3, LOW); 
-    digitalWrite(i4, LOW);
-    
   }
-
+  digitalWrite(i1, LOW); 
+  digitalWrite(i2, LOW); 
+  digitalWrite(i3, LOW); 
+  digitalWrite(i4, LOW);
 }
