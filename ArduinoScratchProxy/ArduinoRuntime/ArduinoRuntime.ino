@@ -35,7 +35,7 @@ bool AciveDI[13] = {0};
 bool AciveAI[5] = {0};
 byte n=0;
 byte bv=0;
-
+int DEBUG=0;
 
 void setup() {
   Serial.begin(38400);        
@@ -53,7 +53,7 @@ void loop()
     if (Serial.available() > 0) 
     {      
       cmd = Serial.read();
-      //Serial.print(cmd);
+      if (DEBUG) Serial.print(cmd);
       if (cmd == ' ' || cmd == 13 || cmd == 10) 
        continue;
           
@@ -64,46 +64,46 @@ void loop()
       else if (cmd == 'c')
       {
         delay(20);
-        //Serial.print("Config ");
+        if (DEBUG) Serial.print("Config ");
         
             cmd = Serial.read();
-        //Serial.print(cmd);
+            if (DEBUG) Serial.println(cmd);
 
             if (cmd == 'i')       //set as digital input with pullup
             {
                 n = Serial.parseInt();  //number
-          //Serial.print(n);
-          //Serial.print(" as DIn Pullup\n");
+                if (DEBUG) Serial.print(n);
+                if (DEBUG) Serial.print(" as DIn Pullup\n");
                 pinMode(n, INPUT_PULLUP);
                 AciveDI[n-1]=1;
             }
             else if (cmd == 'I')       //set as digital input
             {
                 n = Serial.parseInt();  //number
-          //Serial.print(n);
-          //Serial.print(" as DIn\n");
+                if (DEBUG) Serial.print(n);
+                if (DEBUG) Serial.print(" as DIn\n");
                 pinMode(n, INPUT);
                 AciveDI[n-1]=1;
             }
             else if (cmd == 'a')       //set as analog input
             {
-          n = Serial.parseInt();  //number
-          //Serial.print(n);
-          //Serial.print(" as AIn\n");
+                n = Serial.parseInt();  //number
+                if (DEBUG) Serial.print(n);
+                if (DEBUG) Serial.print(" as AIn\n");
                 AciveAI[n]=1;
             }
             else if (cmd == 'o')       //set as output
             {
                 n = Serial.parseInt();  //number
-          //Serial.print(n);
-          //Serial.print(" as Out\n");
+                if (DEBUG) Serial.print(n);
+                if (DEBUG) Serial.print(" as Out\n");
                 pinMode(n, OUTPUT);
             }
             else if (cmd == 'e')       //servo
             {
                 n = Serial.parseInt();  //number
-          //Serial.print(n);
-          //Serial.print(" as Servo\n");
+                if (DEBUG) Serial.print(n);
+                if (DEBUG) Serial.print(" as Servo\n");
                 int idx = n-1;
                 SEM[idx].attach(ServoPinOffset+idx);
             }
@@ -128,32 +128,32 @@ void loop()
       }
       else if (cmd == 's')       //set
       {
-        //Serial.print("Set ");
+        if (DEBUG) Serial.print("Set ");
         n = Serial.parseInt();  //number
-            //byte v = Serial.parseInt();  //value
+        pinMode(n, OUTPUT);
         digitalWrite(n, 1);
-        //Serial.print(n);
-        //Serial.print('\n');
+        if (DEBUG) Serial.print(n);
+        if (DEBUG) Serial.print('\n');
       }
       else if (cmd == 'r')       //set
       {
-        //Serial.print("ReSet ");
+        if (DEBUG) Serial.print("ReSet ");
         n = Serial.parseInt();  //number
-        //byte v = Serial.parseInt();  //value
+        pinMode(n, OUTPUT);
         digitalWrite(n, 0);
-        //Serial.print(n);
-        //Serial.print('\n');
+        if (DEBUG) Serial.print(n);
+        if (DEBUG) Serial.print('\n');
       }
       //Motor via L293
       else if (cmd == 'm')       //motor
       {
-        //Serial.print("Motor ");
+        if (DEBUG) Serial.print("Motor ");
         n = Serial.parseInt();  //number
-        //Serial.print(n);
-        //Serial.print(';');
+        if (DEBUG) Serial.print(n);
+        if (DEBUG) Serial.print(';');
         int v = Serial.parseInt();  //number
-        //Serial.print(v);
-        //Serial.print('\n');
+        if (DEBUG) Serial.print(v);
+        if (DEBUG) Serial.print('\n');
         if (n==1)
         {
           pinMode(2, OUTPUT);
@@ -198,20 +198,24 @@ void loop()
       //Stepper Motor
       else if (cmd == 't')     
       {
-        //Serial.print("Stepper ");
-        int n = Serial.parseInt();  //stepper id
-        //Serial.print(n);
-        //Serial.print(';');
-        int s = Serial.parseInt();  //steps
-        //Serial.print(s);
-        //Serial.print('\n');
+          if (DEBUG) Serial.print("Stepper ");
+          int n = Serial.parseInt();  //stepper id
+          if (DEBUG) Serial.print(n);
+          if (DEBUG) Serial.print(';');
+          int s = Serial.parseInt();  //steps
+          if (DEBUG) Serial.print(s);
+          if (DEBUG) Serial.print('\n');
   
         stepper_do(n,s);
       }
+      else if (cmd == 'd')     
+      {
+          DEBUG=1;
+      }
       else 
       {
-       Serial.print("No Command:");
-       Serial.print(cmd); 
+         if (DEBUG) Serial.print("No Command:");
+         if (DEBUG) Serial.print(cmd); 
       }
     }
   }
@@ -224,7 +228,7 @@ void stepper_do(int num, int steps)
   int i2 = 3;
   int i3 = 4;
   int i4 = 5;
-  int T = 1600;
+  int T = 1200;
   
   if(num == 1)
   {
