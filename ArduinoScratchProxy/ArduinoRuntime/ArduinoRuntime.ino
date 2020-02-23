@@ -3,7 +3,7 @@ Arduino run-time system for controlling the I/O from outside via the serial inte
 Author: Valentin Heinitz, 2018-10-10
 
 Description:
-Intender for the use in a children-course for technics and programming. The usual kits for such 
+Intended for the use in a children-course for technics and programming. The usual kits for such 
 courses - LEGO MindStorm was not affordable. The Scratch programming language for children and arduino, "glued" 
 together by python, seems to be a promising alternative.
 
@@ -17,10 +17,10 @@ a<Num> - Analog Input
 t1 STepper Motor on D2-D5
 t2 STepper Motor on D6-D9
 t3 STepper Motor on D10-D13
-e1 SErver Motor on Pin 10
-e2 SErver Motor on Pin 11
-e3 SErver Motor on Pin 12
-e4 SErver Motor on Pin 13
+e1 SErvo Motor on Pin 10
+e2 SErvo Motor on Pin 11
+e3 SErvo Motor on Pin 12
+e4 SErvo Motor on Pin 13
 
 
 */
